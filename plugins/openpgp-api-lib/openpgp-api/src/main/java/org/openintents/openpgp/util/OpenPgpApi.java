@@ -211,6 +211,18 @@ public class OpenPgpApi {
      */
     public static final String ACTION_GET_KEY = "org.openintents.openpgp.action.GET_KEY";
 
+    /**
+     * Backup all keys given by EXTRA_KEY_IDS and if requested their secret parts.
+     * The encrypted backup will be written to the OutputStream.
+     * The client app has no access to the backup code used to encrypt the backup!
+     * This operation always requires user interaction with RESULT_CODE_USER_INTERACTION_REQUIRED!
+     *
+     * required extras:
+     * long[]      EXTRA_KEY_IDS       (keys that should be included in the backup)
+     * boolean     EXTRA_BACKUP_SECRET (also backup secret keys)
+     */
+    public static final String ACTION_BACKUP = "org.openintents.openpgp.action.BACKUP";
+
     /* Intent extras */
     public static final String EXTRA_API_VERSION = "api_version";
 
@@ -242,6 +254,10 @@ public class OpenPgpApi {
     // GET_KEY
     public static final String EXTRA_KEY_ID = "key_id";
     public static final String RESULT_KEY_IDS = "key_ids";
+
+    // BACKUP
+    public static final String EXTRA_BACKUP_SECRET = "backup_secret";
+
 
     /* Service Intent returns */
     public static final String RESULT_CODE = "result_code";

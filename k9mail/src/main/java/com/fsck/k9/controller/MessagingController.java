@@ -727,7 +727,7 @@ public class MessagingController {
      * TODO Break this method up into smaller chunks.
      */
     @VisibleForTesting
-    void synchronizeMailboxSynchronous(final Account account, final String folder, final MessagingListener listener,
+    public void synchronizeMailboxSynchronous(final Account account, final String folder, final MessagingListener listener,
             Folder providedRemoteFolder) {
         Folder remoteFolder = null;
         LocalFolder tLocalFolder = null;

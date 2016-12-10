@@ -9,13 +9,13 @@ public interface SearchSpecification extends Parcelable {
      * Get all the uuids of accounts this search acts on.
      * @return Array of uuids.
      */
-    public String[] getAccountUuids();
+    String[] getAccountUuids();
 
     /**
      * Returns the search's name if it was named.
      * @return Name of the search.
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the root node of the condition tree accompanying
@@ -23,17 +23,17 @@ public interface SearchSpecification extends Parcelable {
      *
      * @return Root node of conditions tree.
      */
-    public ConditionsTreeNode getConditions();
+    ConditionsTreeNode getConditions();
 
     /*
      * Some meta names for certain conditions.
      */
-    public static final String ALL_ACCOUNTS = "allAccounts";
+    String ALL_ACCOUNTS = "allAccounts";
 
     ///////////////////////////////////////////////////////////////
     // ATTRIBUTE enum
     ///////////////////////////////////////////////////////////////
-    public enum Attribute {
+    enum Attribute {
         CONTAINS,
         NOT_CONTAINS,
 
@@ -56,13 +56,8 @@ public interface SearchSpecification extends Parcelable {
      * when invalid fields passed.
      *
      * By result, only the fields in here are searchable.
-     *
-     * Fields not in here at this moment ( and by effect not searchable ):
-     *      id, html_content, internal_date, message_id,
-     *      preview, mime_type
-     *
      */
-    public enum SearchField {
+    enum SearchField {
         SUBJECT,
         DATE,
         UID,
@@ -82,7 +77,8 @@ public interface SearchSpecification extends Parcelable {
         READ,
         FLAGGED,
         DISPLAY_CLASS,
-        SEARCHABLE
+        SEARCHABLE,
+        MIME_TYPE
     }
 
 
@@ -98,7 +94,7 @@ public interface SearchSpecification extends Parcelable {
      *
      * @author dzan
      */
-    public class SearchCondition implements Parcelable {
+    class SearchCondition implements Parcelable {
         public final String value;
         public final Attribute attribute;
         public final SearchField field;
@@ -118,10 +114,6 @@ public interface SearchSpecification extends Parcelable {
         @Override
         public SearchCondition clone() {
             return new SearchCondition(field, attribute, value);
-        }
-
-        public String toHumanString() {
-            return field.toString() + attribute.toString();
         }
 
         @Override

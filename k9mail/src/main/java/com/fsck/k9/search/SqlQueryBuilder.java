@@ -187,6 +187,10 @@ public class SqlQueryBuilder {
                 columnName = "display_class";
                 break;
             }
+            case MIME_TYPE: {
+                columnName = "messages.mime_type";
+                break;
+            }
             case THREAD_ID: {
                 columnName = "threads.root";
                 break;

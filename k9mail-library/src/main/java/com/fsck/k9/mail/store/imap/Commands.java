@@ -14,4 +14,5 @@ class Commands {
     public static final String LOGIN = "LOGIN";
     public static final String LIST = "LIST";
     public static final String NOOP = "NOOP";
+    public static final String SETACL = "SETACL";
 }

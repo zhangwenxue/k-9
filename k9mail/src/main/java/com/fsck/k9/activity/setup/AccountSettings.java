@@ -59,6 +59,7 @@ public class AccountSettings extends K9PreferenceActivity {
     private static final int SELECT_AUTO_EXPAND_FOLDER = 1;
 
     private static final int ACTIVITY_MANAGE_IDENTITIES = 2;
+    private static final int ACTIVITY_CRYPTO_MANAGE_BACKUP = 3;
 
     private static final String PREFERENCE_SCREEN_MAIN = "main";
     private static final String PREFERENCE_SCREEN_COMPOSING = "composing";
@@ -112,6 +113,7 @@ public class AccountSettings extends K9PreferenceActivity {
     private static final String PREFERENCE_SYNC_REMOTE_DELETIONS = "account_sync_remote_deletetions";
     private static final String PREFERENCE_CRYPTO = "crypto";
     private static final String PREFERENCE_CRYPTO_KEY = "crypto_key";
+    private static final String PREFERENCE_CRYPTO_BACKUP = "crypto_backup";
     private static final String PREFERENCE_CLOUD_SEARCH_ENABLED = "remote_search_enabled";
     private static final String PREFERENCE_REMOTE_SEARCH_NUM_RESULTS = "account_remote_search_num_results";
     private static final String PREFERENCE_REMOTE_SEARCH_FULL_TEXT = "account_remote_search_full_text";
@@ -711,6 +713,15 @@ public class AccountSettings extends K9PreferenceActivity {
             });
 
             cryptoMenu.setOnPreferenceClickListener(null);
+
+            Preference backupPref = findPreference(PREFERENCE_CRYPTO_BACKUP);
+            backupPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    onCryptoManageBackup();
+                    return true;
+                }
+            });
         } else {
             cryptoMenu.setSummary(R.string.account_settings_no_openpgp_provider_configured);
             cryptoMenu.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -726,6 +737,12 @@ public class AccountSettings extends K9PreferenceActivity {
                 }
             });
         }
+    }
+
+    private void onCryptoManageBackup() {
+        Intent intent = new Intent(this, CryptoManageBackup.class);
+        intent.putExtra(CryptoManageBackup.EXTRA_ACCOUNT, account.getUuid());
+        startActivityForResult(intent, ACTIVITY_CRYPTO_MANAGE_BACKUP);
     }
 
     private void removeListEntry(ListPreference listPreference, String remove) {

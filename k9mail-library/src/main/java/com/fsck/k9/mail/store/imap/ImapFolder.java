@@ -38,7 +38,7 @@ import timber.log.Timber;
 import static com.fsck.k9.mail.store.imap.ImapUtility.getLastResponse;
 
 
-class ImapFolder extends Folder<ImapMessage> {
+public class ImapFolder extends Folder<ImapMessage> {
     private static final ThreadLocal<SimpleDateFormat> RFC3501_DATE = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
@@ -298,6 +298,38 @@ class ImapFolder extends Folder<ImapMessage> {
             String encodedFolderName = folderNameCodec.encode(getPrefixedName());
             String escapedFolderName = ImapUtility.encodeString(encodedFolderName);
             connection.executeSimpleCommand(String.format("CREATE %s", escapedFolderName));
+
+            return true;
+        } catch (NegativeImapResponseException e) {
+            return false;
+        } catch (IOException ioe) {
+            throw ioExceptionHandler(this.connection, ioe);
+        } finally {
+            if (this.connection == null) {
+                store.releaseConnection(connection);
+            }
+        }
+    }
+
+    public boolean setAclPermission(String permissionString) throws MessagingException {
+        ImapConnection connection;
+        synchronized (this) {
+            if (this.connection == null) {
+                connection = store.getConnection();
+            } else {
+                connection = this.connection;
+            }
+        }
+
+        if (!connection.hasCapability(Capabilities.ACL)) {
+            return false;
+        }
+
+        String encodedFolderName = folderNameCodec.encode(getPrefixedName());
+        String escapedFolderName = ImapUtility.encodeString(encodedFolderName);
+        try {
+            connection.executeSimpleCommand(String.format(
+                    "%s %s %s %s", Commands.SETACL, escapedFolderName, store.getUsername(), permissionString));
 
             return true;
         } catch (NegativeImapResponseException e) {

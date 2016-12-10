@@ -192,6 +192,12 @@
             android:theme="@android:style/Theme.Dialog"/>
 
         <activity
+            android:name=".activity.setup.CryptoManageBackup"
+            android:configChanges="locale"
+            android:label="Managed Key Backup"
+            />
+
+        <activity
             android:name=".activity.FolderList"
             android:configChanges="locale"
             android:uiOptions="splitActionBarWhenNarrow">

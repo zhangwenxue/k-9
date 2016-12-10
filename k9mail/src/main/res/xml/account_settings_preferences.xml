@@ -479,6 +479,12 @@
             android:key="crypto_key"
             android:title="@string/account_settings_crypto_key" />
 
+        <Preference
+            android:key="crypto_backup"
+            android:persistent="false"
+            android:singleLine="true"
+            android:title="@string/account_settings_crypto_key_backup" />
+
     </PreferenceScreen>
 
 </PreferenceScreen>
