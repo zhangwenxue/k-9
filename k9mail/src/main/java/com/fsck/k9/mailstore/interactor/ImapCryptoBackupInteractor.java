@@ -34,9 +34,6 @@ import okio.ByteString;
 
 
 class ImapCryptoBackupInteractor extends CryptoBackupInteractor {
-    private static final String BACKUP_FOLDER_NAME = "_well_known/_openpgp_backup";
-
-
     private final Context context;
     private Account account;
     private final LocalStore localStore;
@@ -56,16 +53,16 @@ class ImapCryptoBackupInteractor extends CryptoBackupInteractor {
     @WorkerThread
     public BackupStatus checkForBackup() {
         try {
-            ImapFolder folder = remoteStore.getFolder(BACKUP_FOLDER_NAME);
+            ImapFolder folder = remoteStore.getFolder(BACKUP_IMAP_FOLDER_NAME);
             if (!folder.exists()) {
                 return new BackupStatus(BackupStatusType.EMPTY, null);
             }
 
             MessagingController.getInstance(context).synchronizeMailboxSynchronous(
-                    account, BACKUP_FOLDER_NAME, null, null);
+                    account, BACKUP_IMAP_FOLDER_NAME, null, null);
 
             LocalSearch localSearch = new LocalSearch();
-            localSearch.and(SearchField.FOLDER, BACKUP_FOLDER_NAME, Attribute.EQUALS);
+            localSearch.and(SearchField.FOLDER, BACKUP_IMAP_FOLDER_NAME, Attribute.EQUALS);
             localSearch.and(SearchField.MIME_TYPE, "application/pgp-encrypted-keys", Attribute.EQUALS);
 
             List<LocalMessage> localMessages = localStore.searchForMessages(null, localSearch);
@@ -75,7 +72,6 @@ class ImapCryptoBackupInteractor extends CryptoBackupInteractor {
             }
 
             return new BackupStatus(BackupStatusType.OK, localMessages);
-
         } catch (MessagingException e) {
             Log.e(K9.LOG_TAG, "Erro searching for crypto message");
             return new BackupStatus(BackupStatusType.ERROR, null);
@@ -95,14 +91,14 @@ class ImapCryptoBackupInteractor extends CryptoBackupInteractor {
     }
 
     private void saveMessageToBackupFolder(MimeMessage message) throws MessagingException {
-        ImapFolder folder = remoteStore.getFolder(BACKUP_FOLDER_NAME);
+        ImapFolder folder = remoteStore.getFolder(BACKUP_IMAP_FOLDER_NAME);
 
         folder.open(Folder.OPEN_MODE_RW);
         createFolderIfNotExists(folder);
 
         folder.appendMessages(Collections.singletonList(message));
         MessagingController.getInstance(context).synchronizeMailboxSynchronous(
-                account, BACKUP_FOLDER_NAME, null, folder);
+                account, BACKUP_IMAP_FOLDER_NAME, null, folder);
     }
 
     private MimeMessage createBackupMessage(byte[] data) {

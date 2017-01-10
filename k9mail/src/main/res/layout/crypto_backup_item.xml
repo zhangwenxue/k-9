@@ -14,10 +14,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:src="@drawable/status_signature_verified_cutout"
         android:tint="?attr/openpgp_green"
+        />
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:maxLines="1"
+        android:text="From "
         />
 
     <TextView

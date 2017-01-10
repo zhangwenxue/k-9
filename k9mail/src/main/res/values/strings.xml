@@ -1231,4 +1231,5 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="mail_list_widget_loading">Loading messages…</string>
 
     <string name="account_settings_crypto_key_backup">Key Backup</string>
+    <string name="key_backup_title">Key Backup</string>
 </resources>

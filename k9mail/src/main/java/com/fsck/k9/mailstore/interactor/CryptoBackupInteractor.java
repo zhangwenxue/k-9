@@ -17,6 +17,9 @@ import com.fsck.k9.mailstore.LocalStore;
 
 
 public class CryptoBackupInteractor {
+    public static final String BACKUP_IMAP_FOLDER_NAME = "_well_known/_openpgp_backup";
+
+
     public static CryptoBackupInteractor getInstance(Account account) {
         Context context = Globals.getContext();
 

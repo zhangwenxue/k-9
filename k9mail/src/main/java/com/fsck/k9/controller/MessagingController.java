@@ -109,6 +109,8 @@ import timber.log.Timber;
 import static com.fsck.k9.K9.MAX_SEND_ATTEMPTS;
 import static com.fsck.k9.mail.Flag.X_REMOTE_COPY_STARTED;
 
+import static com.fsck.k9.mailstore.interactor.CryptoBackupInteractor.BACKUP_IMAP_FOLDER_NAME;
+
 
 /**
  * Starts a long running (application) Thread that will run through commands
@@ -3904,6 +3906,9 @@ public class MessagingController {
                             || account.getDraftsFolderName().equals(folderName)
                             || account.getSpamFolderName().equals(folderName)
                             || account.getSentFolderName().equals(folderName))) {
+                return false;
+            }
+            if (BACKUP_IMAP_FOLDER_NAME.equals(folderName)) {
                 return false;
             }
         }

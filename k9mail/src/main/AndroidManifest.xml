@@ -194,7 +194,7 @@
         <activity
             android:name=".activity.setup.CryptoManageBackup"
             android:configChanges="locale"
-            android:label="Managed Key Backup"
+            android:label="@string/key_backup_title"
             />
 
         <activity

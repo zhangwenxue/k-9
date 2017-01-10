@@ -155,4 +155,6 @@ public class CryptoManageBackupPresenter {
         }.execute();
     }
 
+    public void onClickRestoreBackup(String messageUid) {
+    }
 }

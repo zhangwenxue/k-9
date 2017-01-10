@@ -10,6 +10,8 @@ import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
@@ -18,6 +20,7 @@ import com.fsck.k9.R;
 import com.fsck.k9.activity.K9Activity;
 import com.fsck.k9.mailstore.LocalMessage;
 import com.fsck.k9.ui.crypto.backup.CryptoBackupMessageAdapter;
+import com.fsck.k9.ui.crypto.backup.CryptoBackupMessageAdapter.OnClickRestoreBackupListener;
 import com.fsck.k9.ui.crypto.backup.CryptoManageBackupPresenter;
 
 
@@ -28,7 +31,7 @@ import com.fsck.k9.ui.crypto.backup.CryptoManageBackupPresenter;
  * activity. If no settings are found the settings are handed off to the
  * AccountSetupAccountType activity.
  */
-public class CryptoManageBackup extends K9Activity {
+public class CryptoManageBackup extends K9Activity implements OnClickRestoreBackupListener {
     public static final String EXTRA_ACCOUNT = "account";
 
     public static final int VIEW_INDEX_PROGRESS = 0;
@@ -69,7 +72,7 @@ public class CryptoManageBackup extends K9Activity {
         presenter = new CryptoManageBackupPresenter(getApplicationContext(), this);
         presenter.initFromIntent(getIntent());
 
-        adapter = new CryptoBackupMessageAdapter(this);
+        adapter = new CryptoBackupMessageAdapter(this, this);
         listView.setAdapter(adapter);
     }
 
@@ -136,5 +139,10 @@ public class CryptoManageBackup extends K9Activity {
         presenter.onDestroy();
         presenter = null;
         super.onDestroy();
+    }
+
+    @Override
+    public void onClickRestore(String messageUid) {
+        presenter.onClickRestoreBackup(messageUid);
     }
 }
