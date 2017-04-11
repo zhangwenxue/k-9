@@ -1,8 +1,5 @@
-
 package com.fsck.k9.activity.setup;
 
-
-import java.util.List;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -10,18 +7,12 @@ import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
 
 import com.fsck.k9.R;
 import com.fsck.k9.activity.K9Activity;
-import com.fsck.k9.mailstore.LocalMessage;
-import com.fsck.k9.ui.crypto.backup.CryptoBackupMessageAdapter;
-import com.fsck.k9.ui.crypto.backup.CryptoBackupMessageAdapter.OnClickRestoreBackupListener;
-import com.fsck.k9.ui.crypto.backup.CryptoManageBackupPresenter;
+import com.fsck.k9.ui.crypto.backup.CryptoKeyTransferPresenter;
 
 
 /**
@@ -31,49 +22,41 @@ import com.fsck.k9.ui.crypto.backup.CryptoManageBackupPresenter;
  * activity. If no settings are found the settings are handed off to the
  * AccountSetupAccountType activity.
  */
-public class CryptoManageBackup extends K9Activity implements OnClickRestoreBackupListener {
+public class CryptoKeyTransferActivity extends K9Activity {
     public static final String EXTRA_ACCOUNT = "account";
 
-    public static final int VIEW_INDEX_PROGRESS = 0;
+    public static final int VIEW_INDEX_OVERVIEW = 0;
     public static final int VIEW_INDEX_UNSUPPORTED = 1;
-    public static final int VIEW_INDEX_ENABLED_EMPTY = 2;
-    public static final int VIEW_INDEX_ENABLED_OK = 3;
     public static final int REQUEST_MASK_PRESENTER = (1 << 8);
 
 
-    private CryptoManageBackupPresenter presenter;
-    private CryptoBackupMessageAdapter adapter;
+    private CryptoKeyTransferPresenter presenter;
     private ViewAnimator statusViewAnimator;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.crypto_manage_backup);
+        setContentView(R.layout.crypto_key_transfer);
 
         statusViewAnimator = (ViewAnimator) findViewById(R.id.backup_status_animator);
 
-        findViewById(R.id.backup_none_button).setOnClickListener(new OnClickListener() {
+        findViewById(R.id.transfer_receive_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onClickBackupNow();
+                presenter.onClickTransferReceive();
             }
         });
 
-        findViewById(R.id.backup_list_button).setOnClickListener(new OnClickListener() {
+        findViewById(R.id.transfer_send_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onClickBackupNow();
+                presenter.onClickTransferSend();
             }
         });
 
-        ListView listView = (ListView) findViewById(R.id.crypto_backup_list);
-
-        presenter = new CryptoManageBackupPresenter(getApplicationContext(), this);
+        presenter = new CryptoKeyTransferPresenter(getApplicationContext(), this);
         presenter.initFromIntent(getIntent());
-
-        adapter = new CryptoBackupMessageAdapter(this, this);
-        listView.setAdapter(adapter);
     }
 
     @Override
@@ -86,27 +69,8 @@ public class CryptoManageBackup extends K9Activity implements OnClickRestoreBack
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    public void setStatusToProgress() {
-        statusViewAnimator.setDisplayedChild(VIEW_INDEX_PROGRESS);
-    }
-
-    public void setStatusToUnsupported() {
-        statusViewAnimator.setDisplayedChild(VIEW_INDEX_UNSUPPORTED);
-    }
-
-    public void setStatusToError() {
-        Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
-    }
-
-    public void setStatusToEnabledEmpty() {
-        statusViewAnimator.setDisplayedChild(VIEW_INDEX_ENABLED_EMPTY);
-    }
-
-    public void setStatusToBackupOk(List<LocalMessage> messages) {
-        statusViewAnimator.setDisplayedChild(VIEW_INDEX_ENABLED_OK);
-
-        adapter.clear();
-        adapter.addAll(messages);
+    public void setStatusToOverview() {
+        statusViewAnimator.setDisplayedChild(VIEW_INDEX_OVERVIEW);
     }
 
     public void closeWithInvalidAccountError() {
@@ -141,8 +105,11 @@ public class CryptoManageBackup extends K9Activity implements OnClickRestoreBack
         super.onDestroy();
     }
 
-    @Override
-    public void onClickRestore(String messageUid) {
-        presenter.onClickRestoreBackup(messageUid);
+    public void setStatusToError() {
+        Toast.makeText(this, "error", Toast.LENGTH_LONG).show();
+    }
+
+    public void setStatusToPending() {
+
     }
 }

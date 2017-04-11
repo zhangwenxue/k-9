@@ -740,8 +740,8 @@ public class AccountSettings extends K9PreferenceActivity {
     }
 
     private void onCryptoManageBackup() {
-        Intent intent = new Intent(this, CryptoManageBackup.class);
-        intent.putExtra(CryptoManageBackup.EXTRA_ACCOUNT, account.getUuid());
+        Intent intent = new Intent(this, CryptoKeyTransferActivity.class);
+        intent.putExtra(CryptoKeyTransferActivity.EXTRA_ACCOUNT, account.getUuid());
         startActivityForResult(intent, ACTIVITY_CRYPTO_MANAGE_BACKUP);
     }
 

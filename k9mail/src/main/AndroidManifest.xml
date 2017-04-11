@@ -192,7 +192,7 @@
             android:theme="@android:style/Theme.Dialog"/>
 
         <activity
-            android:name=".activity.setup.CryptoManageBackup"
+            android:name=".activity.setup.CryptoKeyTransferActivity"
             android:configChanges="locale"
             android:label="@string/key_backup_title"
             />

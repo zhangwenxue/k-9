@@ -7,8 +7,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.fsck.k9.Account;
+import com.fsck.k9.K9;
 import com.fsck.k9.Preferences;
-import com.fsck.k9.activity.setup.CryptoManageBackup;
+import com.fsck.k9.activity.setup.CryptoKeyTransferActivity;
 import com.fsck.k9.mailstore.interactor.CryptoBackupInteractor;
 import com.fsck.k9.mailstore.interactor.CryptoBackupInteractor.BackupStatus;
 import com.fsck.k9.mailstore.interactor.CryptoBackupInteractor.BackupStatusType;
@@ -17,48 +18,48 @@ import org.openintents.openpgp.util.OpenPgpSimpleApi.BackupDataResult;
 import org.openintents.openpgp.util.OpenPgpSimpleApi.InteractionRequestOrResult;
 
 
-public class CryptoManageBackupPresenter {
-    private static final int MIN_CHECK_TIME_MILLIS = 1000;
+public class CryptoKeyTransferPresenter {
     private static final int REQUEST_CODE_BACKUP = 1;
 
 
     private Context context;
-    private CryptoManageBackup view;
+    private CryptoKeyTransferActivity view;
     private CryptoBackupInteractor cryptoBackupInteractor;
 
     private BackupStatus currentBackupStatus;
     private OpenPgpSimpleApi openPgpSimpleApi;
+    private Account account;
 
 
-    public CryptoManageBackupPresenter(Context context, CryptoManageBackup view) {
+    public CryptoKeyTransferPresenter(Context context, CryptoKeyTransferActivity view) {
         this.context = context;
         this.view = view;
     }
 
     public void initFromIntent(Intent intent) {
-        String accountUuid = intent.getStringExtra(CryptoManageBackup.EXTRA_ACCOUNT);
+        String accountUuid = intent.getStringExtra(CryptoKeyTransferActivity.EXTRA_ACCOUNT);
         if (accountUuid == null) {
             view.closeWithInvalidAccountError();
             return;
         }
 
-        Account account = Preferences.getPreferences(context).getAccount(accountUuid);
+        account = Preferences.getPreferences(context).getAccount(accountUuid);
         cryptoBackupInteractor = CryptoBackupInteractor.getInstance(account);
-        openPgpSimpleApi = OpenPgpSimpleApi.getInstance(context, account.getOpenPgpProvider());
+        openPgpSimpleApi = OpenPgpSimpleApi.getInstance(context, K9.getOpenPgpProvider());
 
         updateStatus();
     }
 
     private void updateStatus() {
         if (cryptoBackupInteractor == null) {
-            view.setStatusToUnsupported();
+            view.setStatusToError();
             return;
         }
 
         new AsyncTask<Void,Void,BackupStatus>() {
             @Override
             protected void onPreExecute() {
-                view.setStatusToProgress();
+                view.setStatusToOverview();
             }
 
             @Override
@@ -81,16 +82,10 @@ public class CryptoManageBackupPresenter {
 
         switch (currentBackupStatus.statusType) {
             case UNSUPPORTED:
-                view.setStatusToUnsupported();
+                view.setStatusToError();
                 break;
             case ERROR:
                 view.setStatusToError();
-                break;
-            case EMPTY:
-                view.setStatusToEnabledEmpty();
-                break;
-            case OK:
-                view.setStatusToBackupOk(status.backupDate);
                 break;
         }
     }
@@ -99,7 +94,11 @@ public class CryptoManageBackupPresenter {
         view = null;
     }
 
-    public void onClickBackupNow() {
+    public void onClickTransferReceive() {
+        view.setStatusToPending();
+    }
+
+    public void onClickTransferSend() {
         if (currentBackupStatus.statusType == BackupStatusType.UNSUPPORTED) {
             throw new IllegalStateException("Click on backup now shouldn't happen if status is unsupported!");
         }
@@ -121,7 +120,7 @@ public class CryptoManageBackupPresenter {
     private void startOrContinueBackup(Intent intent) {
         InteractionRequestOrResult<BackupDataResult> result;
         if (intent == null) {
-            result = openPgpSimpleApi.actionBackup(true);
+            result = openPgpSimpleApi.actionBackup(true, account.getCryptoKey());
         } else {
             result = openPgpSimpleApi.actionBackupContinue(intent);
         }
@@ -139,7 +138,7 @@ public class CryptoManageBackupPresenter {
         new AsyncTask<Void,Void,Void>() {
             @Override
             protected void onPreExecute() {
-                view.setStatusToProgress();
+                view.setStatusToOverview();
             }
 
             @Override
@@ -153,8 +152,5 @@ public class CryptoManageBackupPresenter {
                 updateStatus();
             }
         }.execute();
-    }
-
-    public void onClickRestoreBackup(String messageUid) {
     }
 }

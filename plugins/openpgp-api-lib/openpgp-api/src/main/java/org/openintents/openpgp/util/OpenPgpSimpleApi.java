@@ -53,9 +53,11 @@ public class OpenPgpSimpleApi {
         }
     }
 
-    public InteractionRequestOrResult<BackupDataResult> actionBackup(boolean backupSecret) {
+    public InteractionRequestOrResult<BackupDataResult> actionBackup(boolean backupSecret, long masterKeyId) {
         Intent intent = new Intent(OpenPgpApi.ACTION_BACKUP);
         intent.putExtra(OpenPgpApi.EXTRA_BACKUP_SECRET, backupSecret);
+        intent.putExtra(OpenPgpApi.EXTRA_REQUEST_ASCII_ARMOR, true);
+        intent.putExtra(OpenPgpApi.EXTRA_KEY_IDS, new long[] { masterKeyId });
 
         return actionBackupContinue(intent);
     }

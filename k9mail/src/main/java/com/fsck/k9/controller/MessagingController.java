@@ -2820,7 +2820,10 @@ public class MessagingController {
 
     private void moveOrDeleteSentMessage(Account account, LocalStore localStore,
             LocalFolder localFolder, LocalMessage message) throws MessagingException {
-        if (!account.hasSentFolder()) {
+        if (message.getFlags().contains(Flag.X_DELETE_AFTER_DELIVERY)) {
+            Timber.i("Message is flagged to not be kept in the sent folder; deleting sent message");
+            message.setFlag(Flag.DELETED, true);
+        } else if (!account.hasSentFolder()) {
             Timber.i("Account does not have a sent mail folder; deleting sent message");
             message.setFlag(Flag.DELETED, true);
         } else {

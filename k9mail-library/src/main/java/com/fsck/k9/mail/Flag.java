@@ -38,6 +38,11 @@ public enum Flag {
     X_DOWNLOADED_FULL,
 
     /**
+     * Indicates that a message should be removed after delivery, rather than moved to the Sent folder.
+     */
+    X_DELETE_AFTER_DELIVERY,
+
+    /**
      * Indicates that a message is partially downloaded from the server and can be viewed but
      * more content is available on the server.
      * This does not include attachments, which are never downloaded fully.
