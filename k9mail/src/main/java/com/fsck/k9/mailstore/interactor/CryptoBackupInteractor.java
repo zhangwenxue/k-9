@@ -93,7 +93,7 @@ public class CryptoBackupInteractor {
 
             message.setFlag(Flag.X_DOWNLOADED_FULL, true);
             message.setFlag(Flag.X_DELETE_AFTER_DELIVERY, true);
-            message.setSubject("Autocrypt Magic Message");
+            message.setSubject("Autocrypt Setup Message");
             message.setInternalDate(nowDate);
             message.addSentDate(nowDate, K9.hideTimeZone());
             message.setFrom(new Address(account.getEmail()));

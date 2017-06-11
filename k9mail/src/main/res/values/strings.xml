@@ -1232,5 +1232,5 @@ Please submit bug reports, contribute new features and ask questions at
 
     <string name="account_settings_crypto_key_backup">Key Transfer</string>
     <string name="key_backup_title">Key Transfer</string>
-    <string name="crypto_key_transfer_description">This will create a special message in your mailbox, that can be opened in other clients to set up Autocrypt.\n\nThis setup message is protected with a setup code, which you will need to write down.</string>
+    <string name="crypto_key_transfer_description">This will create a special message in your mailbox, that can be opened at a later time, or in other clients to set up Autocrypt.\n\nThis setup message is protected with a setup code, which you will need to write down.</string>
 </resources>

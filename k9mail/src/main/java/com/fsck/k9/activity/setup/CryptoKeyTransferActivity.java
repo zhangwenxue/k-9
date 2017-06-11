@@ -26,7 +26,6 @@ public class CryptoKeyTransferActivity extends K9Activity {
     public static final String EXTRA_ACCOUNT = "account";
 
     public static final int VIEW_INDEX_OVERVIEW = 0;
-    public static final int VIEW_INDEX_UNSUPPORTED = 1;
     public static final int REQUEST_MASK_PRESENTER = (1 << 8);
 
 

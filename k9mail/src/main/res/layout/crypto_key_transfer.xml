@@ -18,14 +18,25 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp">
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/autocrypt_logo"
+                android:text="\@"
+                android:textSize="150dp"
+                android:textColor="#00b"
+                android:textStyle="bold"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_below="@+id/autocrypt_logo"
+                android:layout_marginTop="24dp"
                 android:id="@+id/backup_none_text"
                 android:text="@string/crypto_key_transfer_description"
                 android:gravity="center_horizontal"
@@ -48,36 +59,10 @@
                 android:layout_marginTop="24dp"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/transfer_send_button"
-                android:text="Create Setup Message"
+                android:text="Send Setup Message"
                 />
 
         </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:orientation="vertical">
-
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/crypto_backup_list"
-                tools:listitem="@layout/crypto_backup_item" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/backup_none_text"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="24dp"
-                android:id="@+id/backup_list_button"
-                android:text="Backup now"
-                />
-
-        </LinearLayout>
 
     </com.fsck.k9.view.ToolableViewAnimator>
 
