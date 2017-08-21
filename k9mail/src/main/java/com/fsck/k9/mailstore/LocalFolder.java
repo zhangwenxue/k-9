@@ -26,7 +26,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
-import timber.log.Timber;
 
 import com.fsck.k9.Account;
 import com.fsck.k9.K9;
@@ -39,6 +38,7 @@ import com.fsck.k9.mail.Body;
 import com.fsck.k9.mail.BodyPart;
 import com.fsck.k9.mail.BoundaryGenerator;
 import com.fsck.k9.mail.FetchProfile;
+import com.fsck.k9.mail.FetchProfile.Item;
 import com.fsck.k9.mail.Flag;
 import com.fsck.k9.mail.Folder;
 import com.fsck.k9.mail.Message;
@@ -67,6 +67,7 @@ import com.fsck.k9.preferences.Storage;
 import com.fsck.k9.preferences.StorageEditor;
 import org.apache.commons.io.IOUtils;
 import org.apache.james.mime4j.util.MimeUtil;
+import timber.log.Timber;
 
 
 public class LocalFolder extends Folder<LocalMessage> implements Serializable {
@@ -1042,6 +1043,18 @@ public class LocalFolder extends Folder<LocalMessage> implements Serializable {
                                     message.getUid(),
                                     lMessage.getId(),
                                     getName());
+
+                            if (!getAccount().equals(((LocalFolder) destFolder).getAccount())) {
+                                FetchProfile fp = new FetchProfile();
+                                fp.add(Item.ENVELOPE);
+                                fp.add(Item.BODY);
+                                fetch(Collections.singletonList(lMessage), fp, null);
+                                String newUid = copyMessages(Collections.singletonList(message), destFolder)
+                                        .get(oldUID);
+                                message.destroy();
+                                uidMap.put(oldUID, newUid);
+                                return null;
+                            }
 
                             String newUid = K9.LOCAL_UID_PREFIX + UUID.randomUUID().toString();
                             message.setUid(newUid);

@@ -98,6 +98,7 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="compose_title_reply_all">Reply all</string>
     <string name="compose_title_forward">Forward</string>
 
+    <string name="choose_account_title">Choose Account</string>
     <string name="choose_folder_title">Choose Folder</string>
 
     <string name="status_loading_account_folder">Poll <xliff:g id="account">%s</xliff:g>:<xliff:g id="folder">%s</xliff:g><xliff:g id="progress">%s</xliff:g></string>
@@ -515,6 +516,8 @@ Please submit bug reports, contribute new features and ask questions at
     <string name="account_setup_options_mail_display_count_all">all messages</string>
 
     <string name="move_copy_cannot_copy_unsynced_message">Cannot copy or move a message that is not synchronized with the server</string>
+    <string name="move_copy_message_not_fully_downloaded">Cannot copy or move a message across accounts that is not
+        fully downloaded</string>
 
     <string name="account_setup_failed_dlg_title">Setup could not finish</string>
     <string name="account_setup_failed_dlg_auth_message_fmt">Username or password incorrect.\n(<xliff:g id="error">%s</xliff:g>)</string>
