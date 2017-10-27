@@ -2,43 +2,39 @@ package com.fsck.k9.autocrypt;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 
-import com.fsck.k9.mail.Message;
 import com.fsck.k9.mail.Part;
 import com.fsck.k9.mail.internet.MimeUtility;
 import okio.ByteString;
 import timber.log.Timber;
 
 
-class AutocryptHeaderParser {
-    private static final AutocryptHeaderParser INSTANCE = new AutocryptHeaderParser();
+class AutocryptGossipHeaderParser {
+    private static final AutocryptGossipHeaderParser INSTANCE = new AutocryptGossipHeaderParser();
 
 
-    public static AutocryptHeaderParser getInstance() {
+    public static AutocryptGossipHeaderParser getInstance() {
         return INSTANCE;
     }
 
-    private AutocryptHeaderParser() { }
+    private AutocryptGossipHeaderParser() { }
 
 
-    @Nullable
-    AutocryptHeader getValidAutocryptHeader(Message currentMessage) {
-        String[] headers = currentMessage.getHeader(AutocryptHeader.AUTOCRYPT_HEADER);
-        ArrayList<AutocryptHeader> autocryptHeaders = parseAllAutocryptHeaders(headers);
+    List<AutocryptGossipHeader> getAllAutocryptGossipHeaders(Part part) {
+        String[] headers = part.getHeader(AutocryptGossipHeader.AUTOCRYPT_GOSSIP_HEADER);
+        List<AutocryptGossipHeader> autocryptHeaders = parseAllAutocryptGossipHeaders(headers);
 
-        boolean isSingleValidHeader = autocryptHeaders.size() == 1;
-        return isSingleValidHeader ? autocryptHeaders.get(0) : null;
+        return Collections.unmodifiableList(autocryptHeaders);
     }
 
     @Nullable
-    @VisibleForTesting
-    AutocryptHeader parseAutocryptHeader(String headerValue) {
+    private AutocryptGossipHeader parseAutocryptGossipHeader(String headerValue) {
         Map<String,String> parameters = MimeUtility.getAllHeaderParameters(headerValue);
 
         String type = parameters.remove(AutocryptHeader.AUTOCRYPT_PARAM_TYPE);
@@ -59,23 +55,17 @@ class AutocryptHeaderParser {
             return null;
         }
 
-        String to = parameters.remove(AutocryptHeader.AUTOCRYPT_PARAM_ADDR);
-        if (to == null) {
+        String addr = parameters.remove(AutocryptHeader.AUTOCRYPT_PARAM_ADDR);
+        if (addr == null) {
             Timber.e("autocrypt: no to header!");
             return null;
-        }
-
-        boolean isPreferEncryptMutual = false;
-        String preferEncrypt = parameters.remove(AutocryptHeader.AUTOCRYPT_PARAM_PREFER_ENCRYPT);
-        if (AutocryptHeader.AUTOCRYPT_PREFER_ENCRYPT_MUTUAL.equalsIgnoreCase(preferEncrypt)) {
-            isPreferEncryptMutual = true;
         }
 
         if (hasCriticalParameters(parameters)) {
             return null;
         }
 
-        return new AutocryptHeader(parameters, to, byteString.toByteArray(), isPreferEncryptMutual);
+        return new AutocryptGossipHeader(addr, byteString.toByteArray());
     }
 
     private boolean hasCriticalParameters(Map<String, String> parameters) {
@@ -88,10 +78,10 @@ class AutocryptHeaderParser {
     }
 
     @NonNull
-    private ArrayList<AutocryptHeader> parseAllAutocryptHeaders(String[] headers) {
-        ArrayList<AutocryptHeader> autocryptHeaders = new ArrayList<>();
+    private List<AutocryptGossipHeader> parseAllAutocryptGossipHeaders(String[] headers) {
+        ArrayList<AutocryptGossipHeader> autocryptHeaders = new ArrayList<>();
         for (String header : headers) {
-            AutocryptHeader autocryptHeader = parseAutocryptHeader(header);
+            AutocryptGossipHeader autocryptHeader = parseAutocryptGossipHeader(header);
             if (autocryptHeader != null) {
                 autocryptHeaders.add(autocryptHeader);
             }
