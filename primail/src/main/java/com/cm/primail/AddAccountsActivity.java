@@ -1,5 +1,6 @@
 package com.cm.primail;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnEditorAction;
 import butterknife.OnFocusChange;
+import butterknife.OnTextChanged;
 
 public class AddAccountsActivity extends AppCompatActivity {
 
@@ -35,6 +37,7 @@ public class AddAccountsActivity extends AppCompatActivity {
     @BindView(R.id.psw_input_layout)
     TextInputLayout pswInputLayout;
     private EmailAddressValidator mEmailValidator;
+    private ProgressDialog mLoadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +46,17 @@ public class AddAccountsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         mEmailValidator = new EmailAddressValidator();
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mLoadingDialog = new ProgressDialog(this);
+    }
 
-            }
-        });
+    @OnTextChanged({R.id.email})
+    void onEmailTextChanged(CharSequence s, int start, int before, int count) {
+        isMailAddressValid();
+    }
+
+    @OnTextChanged({R.id.password})
+    void onPswTextChanged(CharSequence s, int start, int before, int count) {
+        isPswValid();
     }
 
     @OnFocusChange({R.id.email, R.id.password})
@@ -58,7 +66,7 @@ public class AddAccountsActivity extends AppCompatActivity {
                 if (hasFocus) {
                     emailInputLayout.setErrorEnabled(false);
                 } else {
-                    isMailAddrValid();
+                    isMailAddressValid();
                 }
                 break;
             case R.id.password:
@@ -81,15 +89,14 @@ public class AddAccountsActivity extends AppCompatActivity {
         return false;
     }
 
-
-    private boolean isMailAddrValid() {
-        String emailAddr = email.getText().toString().trim();
-        if (TextUtils.isEmpty(emailAddr)) {
-            emailInputLayout.setError("邮箱不能为空错误！");
+    private boolean isMailAddressValid() {
+        String emailAddress = email.getText().toString().trim();
+        if (TextUtils.isEmpty(emailAddress)) {
+            emailInputLayout.setError("邮箱不能为空");
             return false;
         }
-        if (!mEmailValidator.isValidAddressOnly(emailAddr)) {
-            emailInputLayout.setError("邮箱地址错误！");
+        if (!mEmailValidator.isValidAddressOnly(emailAddress)) {
+            emailInputLayout.setError("邮箱格式不正确");
             return false;
         }
         emailInputLayout.setErrorEnabled(false);
@@ -99,7 +106,7 @@ public class AddAccountsActivity extends AppCompatActivity {
     private boolean isPswValid() {
         String psw = password.getText().toString().trim();
         if (TextUtils.isEmpty(psw)) {
-            pswInputLayout.setError("密码不能为空！");
+            pswInputLayout.setError("邮箱密码不能为空");
             return false;
         }
         pswInputLayout.setErrorEnabled(false);
@@ -125,11 +132,12 @@ public class AddAccountsActivity extends AppCompatActivity {
     }
 
     private void attemptLogin() {
-        boolean isMailAddrValid = isMailAddrValid();
+        boolean isMailAddressValid = isMailAddressValid();
         boolean isPswValid = isPswValid();
-        if (!isMailAddrValid || !isPswValid) {
+        if (!isMailAddressValid || !isPswValid) {
             return;
         }
+        mLoadingDialog.show();
         Log.i("", "");
     }
 }
